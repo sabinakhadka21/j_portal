@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}
+	<title>Create a job</title>
+{% endblock %}
+{% block content %}
+<style>
+	.empty_form{
+		display:none;
+	}
+</style>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+<div class="container">
+  <div class="row">
+	<div class="col-md-8">
+		<div>
+			<form method="post" enctype="multipart/form-data" id="company-form">
+				{% csrf_token %}
+				{{ form.as_p }}
+				{{ second_form.as_p }}
+				<input type="submit" class="btn btn-primary" value="save" id="create_job_save">
+			</form>
+		</div><hr>
+		<div>
+			<!-- <form method="post" id="form-container">
+				{% csrf_token %}
+				<div class="group_form_with_container">
+					<input type="submit" value="submit" class="btn btn-primary" id="form_container_save">
+				</div>
+			</form> -->
+			{{ second_form.media }}
+		</div>
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
+    </div>
+  </div>
+</div>
+
+<script>
+    CKEDITOR.replace('{{ second_form.content.id_for_label }}',{
+		height:500,
+	});
+
+	// var bul = false
+
+	// document.getElementById('create_job_save').addEventListener('click',create_job_save_function);
+	// function create_job_save_function(e){
+	// 	if(e){
+	// 		e.preventDefault();
+	// 	}
+	// 	const formData = new FormData(document.getElementById('company-form'));
+
+	// 	fetch('{% url "jobs:createjob" %}',{
+	// 		method:'POST',
+	// 		body:formData,
+	// 	})
+	// 	.then(response => response.json())
+	// 	.then(status =>{
+	// 		var group_form_with_container = document.querySelector('.group_form_with_container')
+	// 		bul = true
+	// 		alert('saved');
+	// 		var new_element = document.createElement('input');
+	// 		new_element.setAttribute('name','create_job_name');
+	// 		new_element.setAttribute('type','text');
+	// 		new_element.setAttribute('value',status.id);
+	// 		group_form_with_container.append(new_element);
+	// 		console.log(status.id)
+
+	// 	})
+	// 	.catch(error =>{
+	// 		console.log(error);
+	// 	})
+	// }
+	// console.log(`------${bul}`)
+	// document.getElementById('form_container_save').addEventListener('click',form_container_save_function);
+	// function form_container_save_function(e){
+	// 	if(bul == true){
+	// 		if(e){
+	// 			e.preventDefault();
+	// 		}
+	// 		const formData = new FormData(document.getElementById('form-container'));
+
+	// 		fetch('{% url "jobs:createjob" %}',{
+	// 			method:'POST',
+	// 			body:formData,
+	// 		})
+	// 		.then(response => response.json())
+	// 		.then(status =>{
+	// 			alert('saved');
+	// 			console.log(status)
+	// 		})
+	// 		.catch(error =>{
+	// 			console.log(error);
+	// 		})
+	// 	}
+	// }
+
+	// CKEDITOR.replace('{{ second_form.content.id_for_label }}', {
+    //     toolbar: [
+    //         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+    //         { name: 'styles', items: ['Styles', 'Format'] },
+    //         { name: 'colors', items: ['TextColor', 'BGColor'] },
+    //         { name: 'tools', items: ['Maximize'] },
+    //         '/',
+    //         { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+    //         { name: 'links', items: ['Link', 'Unlink'] },
+    //         { name: 'insert', items: ['Image', 'Table', 'HorizontalRule'] },
+    //         { name: 'document', items: ['Source'] },
+    //     ],
+	// 	width: '200%',
+	// 	height:500,
+    // });
+	// const form_count = document.getElementsByClassName('real_form');
+	// const id_items_TOTAL_FORMS = document.getElementById('id_items-TOTAL_FORMS')
+
+	// var add_fields = document.getElementById('add_fields');
+	// add_fields.addEventListener('click',add_fields_function);
+	// function add_fields_function(event){
+	// 	if(event){
+	// 		event.preventDefault();
+	// 	}
+	// 	// console.log(form_count.length)
+
+	// 	const empty_form = document.querySelector('.empty_form').cloneNode(true);
+	// 	const form_list = document.querySelector('.form_list');
+	// 	empty_form.setAttribute('class','real_form');
+	// 	empty_form.setAttribute('id',`form-${form_count.length}`)
+
+	// 	id_items_TOTAL_FORMS.setAttribute('value',form_count.length + 1);
+
+	// 	const regex = new RegExp('__prefix__','g'); 
+	// 	empty_form.innerHTML = empty_form.innerHTML.replace(regex,form_count.length);
+
+	// 	form_list.append(empty_form);
+
+	// }
+</script>
+
+{% endblock %}

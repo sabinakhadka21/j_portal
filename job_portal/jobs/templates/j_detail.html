@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}
+	<title>{{job_detail.company_name}}</title>
+{% endblock %}
+
+{% block content %}
+
+<style>
+  .row{
+    background-color: whitesmoke;
+  }
+</style>
+
+<div class="row p-4">
+	<div class="col-8">
+		{% if job_detail.image %}
+			<img src="{{ job_detail.image.url }}" style="width:600px;height:300px;border-radius:10px;" alt="image">
+		{% else %}
+			<img src="https://imgs.search.brave.com/sxd13nVihYQN1LwLCDFG79slkCnOOBeGe0Uu_xRtGfU/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9maWxl/cy5yZWFscHl0aG9u/LmNvbS9tZWRpYS9D/dXN0b21pemluZy10/aGUtRGphbmdvLUFk/bWluX1dhdGVybWFy/a2VkLjkzYTYxODgw/ZDE1NS5qcGc" style="width:600px;height:300px;border-radius:10px;" alt="img">
+		{% endif %}
+    <br><br>
+    <!-- <small>created : {{job_detail.created_at}}</small>
+    <small>due date : {{job_detail.due_date}}</small><br><br> -->
+    <pre><small>created: {{job_detail.created_at|date}}</small>                     <small>due_date: {{job_detail.due_date}}</small></pre>
+    {% if job_detail.due_date > date %}
+      <p style="color: #42FF00;">Job is Available </p>
+    {% else %}
+      {% if job_detail.due_date < date %}
+        <p style="color: red;">Job is UnAvailable </p>
+      {% else %}
+        <p style="color: #0083FF;">Available </p>
+      {% endif %}
+    {% endif %}
+		<!-- <p style="color: red;">{% if job_detail.due_date >  date %}Job is Available{% else %}Job is Unavaliable {% endif %}</p> -->
+		<h4>{{job_detail.company_name}}</h4>
+		<p><strong>{{job_detail.job_title}}</strong></p>
+		<!-- <p>{{job_detail.phone}}</p> -->
+		<p><a href="https://{{ job_detail.website }}/">{{job_detail.website}}</a></p>
+		<p>{{job_detail.address}}</p>
+		<!-- <p>{{job_detail.email}}</p> -->
+		<p><i>{{job_detail.company_name}}</i><br> {{job_detail.company_description}}</p>
+    <hr>
+    {% for i in formcontainer %}
+      <h4>{{i.title}}</h4>
+      <p>{{i.content|safe}}</p>
+    {% endfor %}
+		
+		
+		{% if job_detail.user == request.user %}
+		<a href="{% url 'jobs:updatejob' job_detail.id %}" class="btn btn-primary">update</a>
+		<a href="#" class="btn btn-primary" data-slug="{{job_detail.slug}}" data-bs-toggle="modal" data-bs-target="#exampleModal">remove</a>
+		{% endif %}
+
+	</div>
+	<div class="col-4 border">
+	</div>
+</div>
+<br>
+<div class="row p-3">
+  <p>Apply   <i class="fa-solid fa-arrow-right"></i>  send your cv <a href="https://{{job_detail.website}}/">{{job_detail.email}}</a></p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+    <div class="toast-container top-0 end-0 translate-middle-x p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-header">
+                <strong class="me-auto">Message</strong>
+                <!-- <small>11 mins ago</small> -->
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-primary-subtle">
+                <p>{{message}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <script type="text/javascript">
+        const toastLiveExample = document.getElementById('liveToast')
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastBootstrap.show()
+    </script>
+{% else %}
+    <!-- <script type="text/javascript">
+        const toastLiveExample = document.getElementById('liveToast')
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastBootstrap.show()
+    </script> -->
+{% endif %}
+<!-- ending bootstrap toasts triggering through js -->
+
+<!-- ending bootstrap toasts  -->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Post</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this post!</p>
+        <form id="del-form" method="post" action="{% url 'jobs:jobdelete' job_detail.id %}">
+        	{% csrf_token %}
+        	<input id="_slug" type="hidden" name="slug"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button id="del-btn" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    let modal = document.getElementById("exampleModal");
+    modal.addEventListener("show.bs.modal",function(evt){
+      let deleteButton = evt.relatedTarget;
+      $("#_slug").val(deleteButton.dataset.slug);
+    });
+    $("#del-btn").click(function(){
+      $("#del-form").submit();
+    })
+  });
+</script>
+
+<!-- end bootstrap modal -->
+
+
+{% endblock %}	

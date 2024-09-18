@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .card{
+        transition: 300ms;
+    }
+    .card:hover{
+        box-shadow: 0 0 15px 2px #818181;
+    }
+
+</style>
+
+<div class="jumbotron p-4">
+    <div class="container">
+        <h3>job portal</h3>
+        <p>A dream doesn't become reality through magic; it takes sweat, determination and hard work. ...</p>
+        <div class="row justify-content-md-center">
+            <div class="col col-md-2">
+                <a class="btn btn-light" href="{% url 'jobs:createjob' %}">Create jobs</a>
+            </div>
+            <div class="col col-md-10">
+
+                <form method="post" class="row row-cols-lg-auto g-2 align-items-center" action="{% url 'jobs:search_feature' %}">
+                    {% csrf_token %}
+                    <div class="col-12">
+                        <div class="input-group">
+                            <input type="text" name="search_query" class="form-control" id="inlineFormInputGroupUsername" placeholder="search">
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+
+<div class="row">
+    {% if query %}
+    <div class="row">
+        {% if searched %}
+        <div>
+            {% for search in searched %}
+                <div class="col-sm-3 mb-3 mb-sm-0">
+                    <div class="card">
+                        <div class="card-body row">
+                            <div class="col-2">
+                                {% if search.image %}
+                                <img src="{{ search.image.url }}" style="border-radius:50%;height: 50px;width: 50px;" alt="img">
+                                {% else %}
+                                <img src="https://imgs.search.brave.com/sxd13nVihYQN1LwLCDFG79slkCnOOBeGe0Uu_xRtGfU/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9maWxl/cy5yZWFscHl0aG9u/LmNvbS9tZWRpYS9D/dXN0b21pemluZy10/aGUtRGphbmdvLUFk/bWluX1dhdGVybWFy/a2VkLjkzYTYxODgw/ZDE1NS5qcGc" style="border-radius: 50%;height: 50px;width: 50px;" alt="img">
+                                {% endif %}
+                            </div>
+                            <div class="col-10">
+                                <a href="{% url 'jobs:detail' search.id %}" class="card-title">
+                                    {{ search.job_title }}</a>
+                                <p class="card-text">{{ search.company_name }}</p>
+                                <a href="{% url 'jobs:detail' search.id %}">see more detail</a>
+                            </div>
+                        </div>
+                    </div><br>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No search result found</p>
+        {% endif %}
+    </div>
+
+    {% else %}
+
+    {% for job in jobs %}
+    <div class="col-sm-3 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card-body row">
+                <div class="col-2">
+                    {% if job.image %}
+                    <img src="{{ job.image.url }}" style="border-radius:50%;height: 50px;width: 50px;" alt="img">
+                    {% else %}
+                    <img src="https://imgs.search.brave.com/sxd13nVihYQN1LwLCDFG79slkCnOOBeGe0Uu_xRtGfU/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9maWxl/cy5yZWFscHl0aG9u/LmNvbS9tZWRpYS9D/dXN0b21pemluZy10/aGUtRGphbmdvLUFk/bWluX1dhdGVybWFy/a2VkLjkzYTYxODgw/ZDE1NS5qcGc" style="border-radius: 50%;height: 50px;width: 50px;" alt="img">
+                    {% endif %}
+                </div>
+                <div class="col-10">
+                    <a href="detail/{{job.id}}" class="card-title">
+                    {{ job.job_title }}</a>
+                    <p class="card-text">{{ job.company_name }}</p>
+                    <a href="detail/{{job.id}}">see more detail</a>
+                </div>
+            </div>
+        </div><br>
+    </div>
+
+    {% endfor %}
+
+    {% endif %}
+</div>
+
+<!-- starting bootstrap toasts  -->
+<!-- <button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>    -->
+
+<!-- starting bootstrap toasts triggering through js -->
+{% if messages %}
+    {% for message in messages %}
+    <div class="toast-container top-0 end-0 translate-middle-x p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-header">
+                <strong class="me-auto">Message</strong>
+                <!-- <small>11 mins ago</small> -->
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-primary-subtle">
+                <p>{{message}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <script type="text/javascript">
+        const toastLiveExample = document.getElementById('liveToast')
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastBootstrap.show()
+    </script>
+{% else %}
+{% endif %}
+{% endblock %}
